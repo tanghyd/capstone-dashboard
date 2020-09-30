@@ -6,5 +6,5 @@ WORKDIR "/app"
 
 RUN conda install --file /tmp/requirements.txt  --channel anaconda --channel conda-forge
 
-ENTRYPOINT [ "python" ]
+ENTRYPOINT [ "python3" ]
 CMD [ "index.py" ]
