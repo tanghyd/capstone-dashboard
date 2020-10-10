@@ -36,9 +36,8 @@ sidebar = html.Div(
         ),
         dbc.Nav(
             [
-                dbc.NavLink("Reports", href="/page-1", id="page-1-link"),
-                dbc.NavLink("Events", href="/page-2", id="page-2-link"),
-                dbc.NavLink("Clusters", href="/page-3", id="page-3-link"),
+                dbc.NavLink("Reports", href="/reports", id="reports-link"),
+                dbc.NavLink("Events", href="/events", id="events-link"),
             ],
             vertical=True,  # ?
             pills=True,  # ?

@@ -1,10 +1,14 @@
-FROM continuumio/miniconda3
+FROM python:3.8
 
-COPY requirements.txt /tmp/
-COPY ./app /app
-WORKDIR "/app"
+EXPOSE 8080
 
-RUN conda install --file /tmp/requirements.txt  --channel anaconda --channel conda-forge
+WORKDIR /app
 
-ENTRYPOINT [ "python3" ]
-CMD [ "index.py" ]
+COPY requirements.txt .
+
+RUN pip install -r requirements.txt && \
+    python -m spacy download en_core_web_lg
+
+COPY ./app .
+
+CMD ["python", "index.py" ]
