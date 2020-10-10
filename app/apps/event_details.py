@@ -1,15 +1,51 @@
+import sys
+from urllib.parse import urlparse, parse_qs
+
 import dash_bootstrap_components as dbc
 import dash_html_components as html
-import pandas as pd
+from dash.dependencies import Input, Output
+import spacy
+from spacy import displacy
+nlp = spacy.load('en_core_web_lg')
 
-df = pd.read_csv('data/group_all_labelled.csv',
-                 usecols=['group', 'filename', 'Near Miss Event', 'event_text', 'reviewed'], nrows=50)
+from app import app
 
-df['label'] = df['Near Miss Event'].astype(int)
-df = df.loc[
-    df.reviewed, ['group', 'filename', 'event_text', 'label']]  # only show reviewed events but drop column after subset
+from . import dataframe
 
-layout = html.Div(children=[
-    html.H4(children='Extracted Labelled Events'),
-    dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)
+dataframe = dataframe.rename(columns={'trigger_words_in_event': 'Trigger Words'})
+
+cols = ['Trigger Words', 'STRAT', 'ROCK', 'LOCATION', 'MINERAL', 'ORE_DEPOSIT', 'TIMESCALE']
+
+
+@app.callback(
+        Output('event-details', 'children'),
+        [Input('url', 'search')]
+)
+def event_details(search):
+    idx = parse_qs(urlparse(search).query)['row']
+    row = dataframe.iloc[idx]
+    event_text = row['event_text'].values[0]
+
+
+    table = dbc.Table(
+            html.Tbody([html.Tr([html.Td(col), html.Td(val)]) for col, val in zip(cols, row[cols].values[0])]),
+            bordered=True,
+            dark=True,
+            hover=True,
+            responsive=True,
+            striped=True,
+    )
+
+    return html.Div([
+        html.H2(row['event_id'].values[0]),
+        html.Br(),
+        html.H4('Event Text:'),
+        html.Iframe(sandbox='', srcDoc=displacy.render(nlp(event_text), style="ent"), width="100%"),
+        html.Br(),
+        table
+    ])
+
+
+layout = html.Div([
+    html.Div(id='event-details', style={'margin': '0 auto'})
 ])

@@ -2,33 +2,28 @@ import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-import pandas as pd
+import sys
+sys.path.insert(0, '..')
 
-# import our main dash app variable from the app.py file
 from app import app
 
-# this should also be loaded once, and then is subsetted when called back.
-# it is important to only read what is required to display -- reading all then subsetting will not reduce load time
-df = pd.read_csv('data/group_all_labelled.csv', usecols=['group', 'filename', 'reviewed'], nrows=50)
-df = df.loc[df.reviewed, ['group', 'filename']]
+from . import dataframe
 
-# specify search options
-options = [{'label': filename, 'value': filename} for filename in df.filename.unique()]
+options = [{'label': filename, 'value': filename} for filename in dataframe.filename.unique()]
 
 layout = html.Div([
-    html.H3('home'),  # header name
+    html.H3('reports'),  # header name
     dcc.Dropdown(
-            id='page-1-dropdown',
+            id='reports-dropdown',
             options=options,
     ),
-    html.Div(id='page-1-display-value'),  # we will output the result from our dropdown here
-]
-)
+    html.Div(id='reports-display-value'),  # we will output the result from our dropdown here
+])
 
 
 # handle the user interactivity for our dropdown
 @app.callback(
-        Output('page-1-display-value', 'children'),
-        [Input('page-1-dropdown', 'value')])
+        Output('reports-display-value', 'children'),
+        [Input('reports-dropdown', 'value')])
 def display_value(value):  # define the function that will compute the output of the dropdown
     return f'You have selected "{value}"'
