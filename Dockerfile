@@ -9,6 +9,8 @@ COPY requirements.txt .
 RUN pip install -r requirements.txt && \
     python -m spacy download en_core_web_lg
 
-COPY ./app .
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+
+COPY ./dashboard .
 
 CMD ["python", "index.py" ]

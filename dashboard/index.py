@@ -1,19 +1,12 @@
-import dash
 import dash_bootstrap_components as dbc
 import dash_core_components as dcc
 import dash_html_components as html
 from dash.dependencies import Input, Output
 
-
-import sys
-sys.path.insert(0, '.')
-
 from app import app
 from apps import reports, event_table, event_details
-from apps.sidebar import sidebar, CONTENT_STYLE
 from apps.navbar import navbar
-
-
+from apps.sidebar import sidebar, CONTENT_STYLE
 
 pages = ['reports', 'events']
 
@@ -27,25 +20,27 @@ def error(pathname):
             ]
     )
 
+
 content = html.Div(id='page-content', style=CONTENT_STYLE)
 
 app.layout = html.Div(
-    [dcc.Location(id="url", refresh=False),
-    sidebar,
-    navbar,
-    content,
-    html.Div(id='intermediate-value', style={'display': 'none'})
-])
+        [dcc.Location(id="url", refresh=False),
+         sidebar,
+         navbar,
+         content,
+         html.Div(id='intermediate-value', style={'display': 'none'})
+         ])
 
 
 @app.callback(
-    [Output(f"{page}-link", "active") for page in pages],
-    [Input("url", "pathname")])
+        [Output(f"{page}-link", "active") for page in pages],
+        [Input("url", "pathname")])
 def toggle_active_links(pathname):
     if pathname in ["/", '/reports', "/home"]:
         return True, False
     else:
         return False, True
+
 
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
@@ -58,6 +53,7 @@ def display_page(pathname):
         return event_details.layout
     else:
         return error(pathname)
+
 
 if __name__ == '__main__':
     app.run_server(host='0.0.0.0', port=8080, debug=True)

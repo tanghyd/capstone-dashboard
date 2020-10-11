@@ -1,11 +1,9 @@
 import dash_bootstrap_components as dbc
-
 import dash_html_components as html
 
 from . import dataframe
 
 dataframe = dataframe.copy()[['event_id', 'event_text', 'labels']]
-
 cols = ['Event ID', 'Event Text', 'Label']
 dataframe.columns = cols
 
