@@ -37,6 +37,7 @@ sidebar = html.Div(
         dbc.Nav(
             [
                 dbc.NavLink("Reports", href="/reports", id="reports-link"),
+                dbc.NavLink("Report Map", href="/map", id='report-map-link'),
                 dbc.NavLink("Events", href="/events", id="events-link"),
             ],
             vertical=True,  # ?

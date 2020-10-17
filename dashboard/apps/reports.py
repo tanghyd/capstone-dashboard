@@ -16,7 +16,6 @@ layout = html.Div([
     html.Div(id='reports-display-value'),  # we will output the result from our dropdown here
 ])
 
-
 # handle the user interactivity for our dropdown
 @app.callback(
         Output('reports-display-value', 'children'),

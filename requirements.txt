@@ -3,6 +3,9 @@ dash-daq
 dash-bootstrap-components
 dash_core_components
 pandas
+geopandas
 spacy
+spacy-lookups-data
 shap
 lime
+sklearn==0.23.1

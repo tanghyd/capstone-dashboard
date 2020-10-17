@@ -39,6 +39,13 @@ def save_model():
 def load_model():
     return load(model_path)
 
+def to_list(x, sep=',', default='unknown'):
+    if isinstance(x, str):
+        return [item.strip() for item in x.split(sep)]
+    else:
+        return [default]
+
+
 
 if __name__ == '__main__':
     save_model()

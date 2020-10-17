@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from apps import reports, event_table, event_details
+from apps import reports, event_table, event_details, report_map
 from apps.navbar import navbar
 from apps.sidebar import sidebar, CONTENT_STYLE
 
@@ -51,6 +51,8 @@ def display_page(pathname):
         return event_table.layout
     elif pathname == '/event-details':
         return event_details.layout
+    elif pathname == '/map':
+        return report_map.layout
     else:
         return error(pathname)
 

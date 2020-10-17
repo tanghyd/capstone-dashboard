@@ -6,14 +6,17 @@ import dash_html_components as html
 from dash.dependencies import Input, Output, State
 from dash.exceptions import PreventUpdate
 
+# import app
 from app import app
 from apps.sidebar import NAVBAR_STYLE
-from . import dataframe
 
-filenames = dataframe[['filename']].drop_duplicates()['filename']
+# import data
+from . import capstone_files
 
+# get report anumbers from data
+#options = [{'label': filename, 'value': filename} for _, filename in capstone_files[['filename']].drop_duplicates()['filename'].to_dict().items()]
 
-options = [{'label': filename, 'value': idx} for idx, filename in filenames.to_dict().items()]
+options = [{'label': str(anumber), 'value': idx} for idx, anumber in capstone_files[['anumber']].drop_duplicates()['anumber'].to_dict().items()]
 
 navbar = dbc.Navbar(
         [
@@ -33,10 +36,10 @@ navbar = dbc.Navbar(
                                                     # className="ml-auto flex-nowrap mt-3 mt-md-0"
                                             ),
                                             align="center"),
-                                    dbc.Col(
-                                            html.Div(id='navbar-display-report', style={'width': '600px'}),
-                                            width="auto",
-                                            align="center"),
+                                #     dbc.Col(
+                                #             html.Div(id='navbar-display-report', style={'width': '600px'}),
+                                #             width="auto",
+                                #             align="center"),
                                 ],
                                 no_gutters=True
                         ),
@@ -49,15 +52,14 @@ navbar = dbc.Navbar(
         style=NAVBAR_STYLE
 )
 
-
 # output selected report to navbar
-@app.callback(
-        Output('navbar-display-report', 'children'),
-        [Input('navbar-dropdown', 'value')])
-def display_value(value):  # define the function that will compute the output of the dropdown
-    if value == None:
-        return 'No Report selected'
-    return f'Displaying information from Report #{value}: {filenames.loc[value]}'
+# @app.callback(
+#         Output('navbar-display-report', 'children'),
+#         [Input('navbar-dropdown', 'value')])
+# def display_value(value):  # define the function that will compute the output of the dropdown
+#     if value == None:
+#         return 'No Report selected'
+#     return f'Displaying information from Report #{value}: {filenames.loc[value]}'
 
 
 # add callback for search value in list for dropdown
@@ -70,7 +72,6 @@ def update_options(search_value):
     elif search_value == None:  # key error of none will error
         raise PreventUpdate
     return [o for o in options if search_value in o["value"]]
-
 
 # add callback for toggling the collapse on small screens
 @app.callback(

@@ -3,7 +3,7 @@ import dash_html_components as html
 
 from . import dataframe
 
-dataframe = dataframe.copy()[['event_id', 'event_text', 'labels']]
+dataframe = dataframe.copy()[['event_id', 'event_text', 'label']]
 cols = ['Event ID', 'Event Text', 'Label']
 dataframe.columns = cols
 
