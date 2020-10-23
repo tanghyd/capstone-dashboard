@@ -14,7 +14,7 @@ from joblib import load
 
 import os
 from app import app
-from . import dataframe
+from app import events
 
 pipe = load('models/model.pkl')
 
@@ -37,7 +37,7 @@ def get_exp(sample):
 def event_details(search):
     print(parse_qs(urlparse(search).query).keys())
     idx = parse_qs(urlparse(search).query)['row']
-    row = dataframe.iloc[idx]
+    row = events.iloc[idx]
     event_id = row['event_id'].values[0]
     event_text = row['event_text'].values[0]
     label_int = row['label'].values[0]

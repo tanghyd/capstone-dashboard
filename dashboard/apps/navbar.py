@@ -10,7 +10,7 @@ from dash.exceptions import PreventUpdate
 from app import app
 
 # import data
-from . import capstone_files
+from app import capstone_files
 
 NAVBAR_STYLE = {
     'position': 'relative',

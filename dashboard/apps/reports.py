@@ -3,9 +3,9 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app
-from . import dataframe
+from app import events
 
-options = [{'label': filename, 'value': filename} for filename in dataframe.filename.unique()]
+options = [{'label': filename, 'value': filename} for filename in events.filename.unique()]
 
 layout = html.Div([
     html.H3('reports'),  # header name
