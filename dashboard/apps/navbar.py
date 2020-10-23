@@ -8,17 +8,21 @@ from dash.exceptions import PreventUpdate
 
 # import app
 from app import app
-from apps.sidebar import NAVBAR_STYLE
 
 # import data
 from . import capstone_files
 
-# get report anumbers from data
-#options = [{'label': filename, 'value': filename} for _, filename in capstone_files[['filename']].drop_duplicates()['filename'].to_dict().items()]
+NAVBAR_STYLE = {
+    'position': 'relative',
+    'left': 0,
+    'right': 12,
+    'margin-left': '16rem', # left margin starts at 16rem width of sidebar
+    'padding': '1rem 1rem',
+}
 
 options = [{'label': str(anumber), 'value': idx} for idx, anumber in capstone_files[['anumber']].drop_duplicates()['anumber'].to_dict().items()]
 
-navbar = dbc.Navbar(
+layout = dbc.Navbar(
         [
             html.Div(
                     [

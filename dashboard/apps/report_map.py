@@ -49,7 +49,6 @@ date_range = pd.date_range(df.report_year.min(), pd.to_datetime('2021-01-01'), f
 decades = [date for i, date in enumerate(date_range[::-1]) if i % 10 == 0][::-1]  # datetime for each decade
 epochs = pd.Series(decades).astype(np.int64).divide(1e9).astype(np.int64)  # convert to unix time
 
-
 options = [{'label': commodity, 'value': commodity} for commodity in commodities.columns.unique()]
 
 seconds_per_year = 31536000

@@ -13,4 +13,4 @@ ENV PYTHONPATH "${PYTHONPATH}:/app"
 
 COPY ./dashboard .
 
-CMD ["python", "index.py" ]
+CMD ["gunicorn", "--workers","4", "--threads", "2", "-b", "0.0.0.0:8080", "wsgi:server"]

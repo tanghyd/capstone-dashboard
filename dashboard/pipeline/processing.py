@@ -168,7 +168,7 @@ def load_spacy_model(base_model="en_core_web_lg", output_type='doc', tokenizer_o
             print('Added trigger phrase matcher pipe')
 
     if tokenizer_only:
-        pipes = ['tagger', 'parser', 'ner']
+        pipes = ['ner']
         if verbose:
             print(f'Loading tokenizer only - disabling: {pipes}.')
         for pipe in pipes:
@@ -236,6 +236,7 @@ def create_trigger_ruler(triggers_path=triggers_path, triggers_from_labelling=Fa
         trigger_ruler.add_patterns(lemma_patterns)
 
     return trigger_ruler
+    
 # function to take doc object to text
 def to_text(doc, lower_case=False):
     if lower_case:  # Use token.text to return strings, which we'll need for Gensim.

@@ -12,22 +12,7 @@ SIDEBAR_STYLE = {
     'background-color': '#f8f9fa',
 }
 
-# the styles for the main content position it to the right of the side bar and add some padding
-CONTENT_STYLE = {
-    'margin-left': '18rem',
-    'margin-right': '2rem',
-    'padding': '2rem 1rem',
-}
-
-NAVBAR_STYLE = {
-    'position': 'relative',
-    'left': 0,
-    'right': 12,
-    'margin-left': '16rem', # left margin starts at 16rem width of sidebar
-    'padding': '1rem 1rem',
-}
-
-sidebar = html.Div(
+layout = html.Div(
     [
         html.H2("WAMEX", className="display-4"),  # sidebar header(?)
         html.Hr(),

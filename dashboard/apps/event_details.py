@@ -5,27 +5,20 @@ import dash_core_components as dcc
 import dash_html_components as html
 import pandas as pd
 import plotly.graph_objects as go
-import spacy
+
 from dash.dependencies import Input, Output
 from lime.lime_text import LimeTextExplainer
 from spacy import displacy
 from spacy.lang.en import English
 from joblib import load
 
+import os
 from app import app
 from . import dataframe
 
-# load nlp model
-#from pipeline.processing import load_spacy_model
-from . import nlp
-
-from pipeline.display import display_ent
-
 pipe = load('models/model.pkl')
 
-dataframe = dataframe.rename(columns={'trigger_words_in_event': 'Trigger Words'})
-
-cols = ['Trigger Words', 'STRAT', 'ROCK', 'LOCATION', 'MINERAL', 'ORE_DEPOSIT', 'TIMESCALE']
+cols = ['TRIGGER','DATE','LOCATION', 'STRAT', 'ROCK', 'LOCATION', 'MINERAL', 'ORE_DEPOSIT', 'TIMESCALE']
 
 class_names = ['not_near_miss', 'near_miss']  # just to display instead of 0 and 1
 explainer = LimeTextExplainer(class_names=class_names)
@@ -42,12 +35,18 @@ def get_exp(sample):
         [Input('url', 'search')]
 )
 def event_details(search):
+    print(parse_qs(urlparse(search).query).keys())
     idx = parse_qs(urlparse(search).query)['row']
     row = dataframe.iloc[idx]
+    event_id = row['event_id'].values[0]
     event_text = row['event_text'].values[0]
     label_int = row['label'].values[0]
     label = "Near Miss Event" if label_int else "Not Near Miss Event"
     color = 'green' if label_int else 'red'
+
+    # load html from file
+    with open(os.path.join('data','html','spacy',f'{event_id}.html'), 'r') as html_file:
+        rendered_html = html_file.read()
 
     table = dbc.Table(
             html.Tbody([html.Tr([html.Td(col), html.Td(val)]) for col, val in zip(cols, row[cols].values[0])]),
@@ -77,7 +76,7 @@ def event_details(search):
         html.H3(label, style={'color': color}),
         html.Br(),
         html.H4('Event Text:'),
-        html.Iframe(sandbox='', srcDoc=display_ent(nlp(event_text), style="ent"), width="100%"),
+        html.Iframe(sandbox='', srcDoc=rendered_html, width="100%"),
         html.Br(),
         table,
         dcc.Graph(figure=fig)
