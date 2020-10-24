@@ -1,15 +1,23 @@
 # capstone-dashboard
 
+spaCy HTML is pre-computed into individual HTML files for each event_id, stored in `dashboard/data/html/spacy/`.
+
+We can easily save these HTML files as a JSON file where keys are event_ids and values are HTML strings - we'll have to see if having a separate HTML file or a single JSON file is better. Zip compression should help here a lot becuase HTML is quite repetitive in its chararacters.
+
 ## Flask
 Run with Flask on 0.0.0.0 port 8080:
+
 `cd dashboard`
+
 `python index.py`
 
 This can be changed in `dashboard/index.py`
 
 ## Gunicorn
 Run with Gunicorn on 0.0.0.0 port 8080:
+
 `cd dashboard`
+
 `gunicorn -b 0.0.0.0:8080 wsgh:server`
 
 ## Docker
