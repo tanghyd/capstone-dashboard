@@ -18,7 +18,7 @@ Run with Gunicorn on 0.0.0.0 port 8080:
 
 `cd dashboard`
 
-`gunicorn -b 0.0.0.0:8080 wsgh:server`
+`gunicorn -b 0.0.0.0:8080 wsgi:server`
 
 ## Docker
 Note: Had some issues with some ports on my local machine and couldn't test Docker with the new Gunicorn server.
