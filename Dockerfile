@@ -6,8 +6,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 
-RUN pip install -r requirements.txt && \
-    python -m spacy download en_core_web_lg
+RUN pip install -r requirements.txt
 
 ENV PYTHONPATH "${PYTHONPATH}:/app"
 
