@@ -15,7 +15,7 @@ import json
 from app import app
 
 # import data
-from app import map_data, commodities
+from app import map_data, commodities, events
 
 from utils import to_list
 
@@ -44,10 +44,11 @@ marks = {epoch: str(decade.year) for epoch, decade in zip(epochs, decades)}
 hide_columns = ["geometry", 'epoch']  # we dont want to display these 
 show_columns = [
     'anumber', 'report_type','report_year','title','project',
-    'commodity','keywords','filename','label']
+    'commodity','keywords','filename','label','date_from','date_to']
 map_data = map_data[show_columns + hide_columns]
 map_data['report_year'] = map_data['report_year'].dt.strftime('%Y')
 
+event_columns = ['anumber','event_text','date_from','date_to','label']
 
 # specify an html layout for this app's page
 layout = html.Div([
@@ -79,14 +80,18 @@ layout = html.Div([
                 #html.Div(id='selected-data'), #style=styles['pre']
                 dash_table.DataTable(
                     id='selected-table',
-                    style_data={
+                    style_cell={
                         'whiteSpace': 'normal',
-                        'height': 'auto'
+                        'height': 'auto',
+                        'minWidth': '250px',
+                        'width': '250px',
+                        'maxWidth': '250px'
                     },
                     #fixed_rows={'headers': True},
                     #style_table={'height': 800},  # defaults to 500
-                    columns=[{"name": col, "id": col} for col in show_columns],
-                )
+                    columns=[{"name": col, "id": col} for col in event_columns],
+                ),
+                dcc.Graph(id="selected-timeline", style={"width": "100%", "display": "inline-block"})
             ]),#, className='three columns'),
         ]
     )
@@ -124,12 +129,15 @@ def make_map(selected, epoch_range):
 
 @app.callback(
     Output('selected-table', 'data'),
+    Output('selected-timeline', 'figure'),
     [Input('graph', 'selectedData')])
 def display_selected_data(selectedData):
     if selectedData is not None:
         selectedANumbers = pd.DataFrame({"anumber": [selectedData['points'][i]['location'] for i in range(len(selectedData['points']))]})
-        metadf = events.loc[:, ~events.columns.isin(hide_columns)] # remove the geometry info to get only the metadata
-        return metadf.merge(selectedANumbers,on="anumber").to_dict("records")
+        report_dates = map_data.loc[:, ['anumber','report_year','date_from','date_to']]
+        events_timeline_df = events.merge(selectedANumbers,on="anumber")
+        events_timeline_df = events_timeline_df.merge(report_dates,on="anumber")
+        events_timeline_df = events_timeline_df.loc[:, event_columns]
+        return events_timeline_df.to_dict("records"), px.timeline(events_timeline_df, x_start="date_from", x_end="date_to", y="anumber", color="label")
     else:
-        return None
-# want to return all the events in the selected region by timeline.
+        return [], {}

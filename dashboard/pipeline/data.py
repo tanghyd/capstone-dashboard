@@ -12,8 +12,8 @@ commodities = pd.read_csv(os.path.join('data','commodities_high-conf.csv'),index
 capstone_files = pd.read_csv(os.path.join('data','capstone_files.zip'), compression='zip')
 
 # load geoview metadata and shape files
-metadata = pd.read_csv(os.path.join('data','geoview','capstone_metadata.zip'), compression='zip', parse_dates=['report_year'],
-    usecols=['anumber','title','report_type','project','keywords','commodity','report_year'])
+metadata = pd.read_csv(os.path.join('data','geoview','capstone_metadata.zip'), compression='zip', parse_dates=['report_year','date_from','date_to'],
+    usecols=['anumber','title','report_type','project','keywords','commodity','report_year','date_from','date_to'])
 
 geoview = gpd.read_file(os.path.join('zip://','data', 'geoview', 'capstone_shapefiles.shp.zip'))
 
