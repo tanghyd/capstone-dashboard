@@ -43,8 +43,8 @@ marks = {epoch: str(decade.year) for epoch, decade in zip(epochs, decades)}
 # specify order of data frame to display
 hide_columns = ["geometry", 'epoch']  # we dont want to display these 
 show_columns = [
-    'anumber', 'report_type','report_year','title','project',
-    'commodity','keywords','filename','label','date_from','date_to']
+    'anumber','title','report_type','report_year','date_from','date_to','project',
+    'commodity','keywords','filename','label']
 map_data = map_data[show_columns + hide_columns]
 map_data['report_year'] = map_data['report_year'].dt.strftime('%Y')
 
@@ -59,7 +59,7 @@ layout = html.Div([
         value=default_commodities,
         multi=True
     ),
-    dcc.Graph(id="graph", style={"width": "75%", "display": "inline-block"}),
+    dcc.Graph(id="map", style={"width": "75%", "display": "inline-block"}),
     dcc.RangeSlider(
         id='year-slider',
         min=map_data['epoch'].min(),
@@ -89,7 +89,7 @@ layout = html.Div([
                     },
                     #fixed_rows={'headers': True},
                     #style_table={'height': 800},  # defaults to 500
-                    columns=[{"name": col, "id": col} for col in event_columns],
+                    columns=[{"name": col, "id": col} for col in show_columns],
                 ),
                 dcc.Graph(id="selected-timeline", style={"width": "100%", "display": "inline-block"})
             ]),#, className='three columns'),
@@ -97,7 +97,7 @@ layout = html.Div([
     )
 
 @app.callback(
-    Output("graph","figure"),
+    Output("map","figure"),
     [Input('report-commodity-dropdown', 'value'),  # selected
     Input('year-slider', 'value')])  # epoch_range
 def make_map(selected, epoch_range):
@@ -128,16 +128,20 @@ def make_map(selected, epoch_range):
         )
 
 @app.callback(
-    Output('selected-table', 'data'),
+    Output('selected-table','data'),
     Output('selected-timeline', 'figure'),
-    [Input('graph', 'selectedData')])
+    [Input('map', 'selectedData')])
 def display_selected_data(selectedData):
     if selectedData is not None:
         selectedANumbers = pd.DataFrame({"anumber": [selectedData['points'][i]['location'] for i in range(len(selectedData['points']))]})
+        metadf = map_data.loc[:, ~map_data.columns.isin(hide_columns)] # remove the geometry info to get only the metadata
+
         report_dates = map_data.loc[:, ['anumber','report_year','date_from','date_to']]
         events_timeline_df = events.merge(selectedANumbers,on="anumber")
         events_timeline_df = events_timeline_df.merge(report_dates,on="anumber")
         events_timeline_df = events_timeline_df.loc[:, event_columns]
-        return events_timeline_df.to_dict("records"), px.timeline(events_timeline_df, x_start="date_from", x_end="date_to", y="anumber", color="label")
+        return metadf.merge(selectedANumbers,on="anumber").to_dict("records"), px.timeline(events_timeline_df, x_start="date_from", x_end="date_to", y="anumber", color="label")
     else:
         return [], {}
+
+#add something which displays the event selected from the timeline
