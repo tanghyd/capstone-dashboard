@@ -2,7 +2,7 @@ import dash
 import dash_bootstrap_components as dbc
 
 # load data frames
-from pipeline.data import *
+from database import events, map_data, map_geometry
 
 app = dash.Dash(__name__, 
     external_stylesheets=[dbc.themes.FLATLY],
