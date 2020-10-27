@@ -1,4 +1,3 @@
-from pipeline.data import *
 # from pipeline.processing import load_spacy_model
 
 # # load specific spacy model

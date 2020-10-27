@@ -45,7 +45,5 @@ def to_list(x, sep=',', default='unknown'):
     else:
         return [default]
 
-
-
 if __name__ == '__main__':
     save_model()

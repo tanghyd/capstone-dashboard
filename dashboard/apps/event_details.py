@@ -35,7 +35,6 @@ def get_exp(sample):
         [Input('url', 'search')]
 )
 def event_details(search):
-    print(parse_qs(urlparse(search).query).keys())
     idx = parse_qs(urlparse(search).query)['row']
     row = events.iloc[idx]
     event_id = row['event_id'].values[0]

@@ -18,7 +18,6 @@ import json
 from tqdm import tqdm
 
 import pandas as pd
-import spacy
 
 
 ### TEXT PREPROCESSING AND FEATURE EXTRACTION ###
