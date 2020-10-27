@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app, server
-from apps import reports, event_table, event_details, report_map, sidebar
+from apps import reports, event_table, event_details, report_map, sidebar, navbar
 
 def error(pathname):
     return dbc.Jumbotron(
@@ -17,7 +17,7 @@ def error(pathname):
 
 # the styles for the main content position it to the right of the side bar and add some padding
 CONTENT_STYLE = {
-    'margin-left': '18rem',
+    'margin-left': '2rem',  #18rem with sidebar!
     'margin-right': '2rem',
     'padding': '2rem 1rem',
 }
@@ -28,8 +28,8 @@ content = html.Div(id='page-content', style=CONTENT_STYLE)
 # the "current" layout - content changes depending on pathname
 app.layout = html.Div(
         [dcc.Location(id="url", refresh=False),
-         sidebar.layout,
-     #    navbar.layout,
+     #    sidebar.layout,
+         navbar.layout,
          content,
 ])
 
@@ -37,7 +37,7 @@ app.layout = html.Div(
 # multi-page layout needs to be informed of all layouts to be displayed but no loaded
 app.validation_layout = html.Div([
     sidebar.layout,
-   # navbar.layout,
+    navbar.layout,
     reports.layout,
     event_table.layout,
     event_details.layout,

@@ -1,0 +1,35 @@
+
+- Create a 
+
+- Be able to subset the reports given a range of times (e.g. a slider)
+
+- Navbar styling may need improvement
+
+- Subset on .json files or ANUMBERS to see events
+
+- Transparent backgrounds on plotly map/table so theme can be congruent
+
+- Check visualisation on different screen resolutions (mobile vs web?)
+
+- Fix docker container
+
+- Run example on AWS with the smallest possible subset of data
+
+- Integrate the full dataset with predictions into the repo (then subset for proof of concept version)
+
+
+### MUST BE VERY NICE TO HAVE ####
+
+- Show the coverage over the sentences for a given report (i.e. stats about what was examined per report, not event)
+
+- 
+### LOW PRIORITY ###
+
+- Case insensitive searching for keywords and commodities
+
+
+
+### COMPLETE ###
+- Implement proof of concept report with selection functionality to produce reports
+- Fix table to width of screen! - yayy
+- Put table adjacent to map - yayy!
