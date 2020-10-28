@@ -35,26 +35,7 @@ styles = {
 # specify order of data frame to display in table
 hide_columns = ["geometry", 'epoch']  # we dont want to display these 
 show_columns = ['anumber','title','report_type','report_year','project',
-'commodity','keywords','score','count'] # ,'total','prop', 'date_from','date_to'
-
-# geofile for choropleth mapbox visualisation
-import json
-geofile = json.loads(map_geometry.set_index('anumber').to_json())
-
-# build interactive choropleth_mapbox figure
-fig = px.choropleth_mapbox(
-    map_data, geojson=geofile,
-    locations='anumber_str',
-    color='score',
-    featureidkey="id",
-    color_continuous_scale="Viridis",
-    mapbox_style="carto-positron",
-    zoom=4, 
-    center={"lat": -25, "lon": 121.5},
-    opacity=0.5,
-    height=800,
-    width=600
-)
+'commodity','keywords','score'] # 'count' ,'total','prop', 'date_from','date_to'
 
 # transparent background
 # fig.update_layout({
@@ -64,15 +45,7 @@ fig = px.choropleth_mapbox(
 
 # specify an html layout for this app's page
 layout = html.Div([
-            html.Div([
-                html.Div([
-                    html.H3('Mineral Exploration Map'),  # header name
-                        dcc.Graph(
-                            id="map", 
-                            figure=fig,  # this is where choropleth mapbox figure is inserted
-                            style={"width": "80%", "display": "inline-block"}
-                        )],className = "six columns"),  #six columns???
-
+            html.Div([  #six columns???
             html.Div([
                 html.H3('Data Table'),
                 dcc.Markdown("""
@@ -87,9 +60,9 @@ layout = html.Div([
                     style_cell={
                         'whiteSpace': 'normal',
                         'height': 'auto',
-                        'minWidth': '25px',
-                        'width': '150px',
-                        'maxWidth': '200px'
+                        # 'minWidth': '25px',
+                        # 'width': '150px',
+                        # 'maxWidth': '200px'
                     },
                     style_table={'height': '700px', 'overflowY': 'auto', 'width': '1400px'},
                     #fixed_rows={'headers': True},
@@ -102,7 +75,7 @@ layout = html.Div([
                     selected_rows=[],
                     style_cell_conditional=[
                         {'if': {'column_id': 'anumber'},
-                        'width': '5%'},
+                        'width': '8%'},
                         {'if': {'column_id': 'title'},
                         'width': '25%'},
                         {'if': {'column_id': 'report_type'},
@@ -116,9 +89,9 @@ layout = html.Div([
                         {'if': {'column_id': 'keywords'},
                         'width': '20%'},  
                         {'if': {'column_id': 'score'},
-                        'width': '5%'},  
-                        {'if': {'column_id': 'count'},
-                        'width': '5%'}, 
+                        'width': '8%'},  
+                        # {'if': {'column_id': 'count'},
+                        # 'width': '5%'}, 
                         # {'if': {'column_id': 'total'},
                         # 'width': '2%'}, 
                         # {'if': {'column_id': 'prop'},
@@ -126,9 +99,8 @@ layout = html.Div([
                         ],
                 ),
             ],className = "six columns"),
-        ], className = "row"
-    ),
-    html.Div(id='datatable-interactivity-container')
+        ], className = "row"),
+    html.Div(id='datatable-interactivity-container'),
 ])
 
 @app.callback(

@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 
 from app import app, server
 from apps import reports, event_table, event_details, report_map, sidebar, navbar
+from app import map_geometry, map_data
 
 def error(pathname):
     return dbc.Jumbotron(
@@ -22,12 +23,54 @@ CONTENT_STYLE = {
     'padding': '2rem 1rem',
 }
 
+
+# geofile for choropleth mapbox visualisation
+import json
+import plotly.express as px
+geofile = json.loads(map_geometry.set_index('anumber').to_json())
+
+# build interactive choropleth_mapbox figure
+fig = px.choropleth_mapbox(
+    map_data, geojson=geofile,
+    locations='anumber_str',
+    color='score',
+    featureidkey="id",
+    color_continuous_scale="Viridis",
+    mapbox_style="carto-positron",
+    zoom=4, 
+    center={"lat": -25, "lon": 121.5},
+    opacity=0.5,
+    height=800,
+    width=580
+)
+
+frontpage_map_style = {
+    'position': 'fixed',
+    'top': 0,
+    'left': 0,
+    'bottom': 0,
+    'width': '64rem',
+    'padding': '2rem 1rem',
+    'background-color': '#f8f9fa',
+}
+
+frontpage_map = html.Div([
+    html.H3('Mineral Exploration Map'),  # header name
+    dcc.Graph(
+        id="map", 
+        figure=fig,  # this is where choropleth mapbox figure is inserted
+        style={"width": "100%", "display": "inline-block"}
+    )]
+)
+        
+
 # current page content
 content = html.Div(id='page-content', style=CONTENT_STYLE)
 
 # the "current" layout - content changes depending on pathname
 app.layout = html.Div(
         [dcc.Location(id="url", refresh=False),
+         frontpage_map,
      #    sidebar.layout,
          navbar.layout,
          content,
@@ -36,6 +79,7 @@ app.layout = html.Div(
 # "complete" layout
 # multi-page layout needs to be informed of all layouts to be displayed but no loaded
 app.validation_layout = html.Div([
+    frontpage_map,
     sidebar.layout,
     navbar.layout,
     reports.layout,
