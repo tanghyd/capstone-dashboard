@@ -23,12 +23,10 @@ cols = ['TRIGGER','DATE','LOCATION', 'STRAT', 'ROCK', 'LOCATION', 'MINERAL', 'OR
 class_names = ['not_near_miss', 'near_miss']  # just to display instead of 0 and 1
 explainer = LimeTextExplainer(class_names=class_names)
 
-
 def get_exp(sample):
     exp = explainer.explain_instance(sample.item(), pipe.predict_proba, num_features=6)
     fig = exp.as_pyplot_figure()
     return fig
-
 
 @app.callback(
         Output('event-details', 'children'),

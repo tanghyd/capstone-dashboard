@@ -18,9 +18,9 @@ def error(pathname):
 
 # the styles for the main content position it to the right of the side bar and add some padding
 CONTENT_STYLE = {
-    'margin-left': '2rem',  #18rem with sidebar!
+    'margin-left': '40rem',  #18rem with sidebar!
     'margin-right': '2rem',
-    'padding': '2rem 1rem',
+    'padding': '8rem 1rem',
 }
 
 
@@ -28,6 +28,16 @@ CONTENT_STYLE = {
 import json
 import plotly.express as px
 geofile = json.loads(map_geometry.set_index('anumber').to_json())
+
+frontpage_mapstyle = {
+    'position': 'fixed',
+    'top': 0,
+    'left': 0,
+    'bottom': 0,
+    'width': '32rem',
+    'padding': '6rem 1rem',
+  #  'background-color': '#f8f9fa',
+}
 
 # build interactive choropleth_mapbox figure
 fig = px.choropleth_mapbox(
@@ -40,40 +50,31 @@ fig = px.choropleth_mapbox(
     zoom=4, 
     center={"lat": -25, "lon": 121.5},
     opacity=0.5,
-    height=800,
-    width=580
+    height=1000,
+    width=600
 )
 
-frontpage_map_style = {
-    'position': 'fixed',
-    'top': 0,
-    'left': 0,
-    'bottom': 0,
-    'width': '64rem',
-    'padding': '2rem 1rem',
-    'background-color': '#f8f9fa',
-}
-
 frontpage_map = html.Div([
-    html.H3('Mineral Exploration Map'),  # header name
+  #  html.H3('Mineral Exploration Map'),  # header name
     dcc.Graph(
         id="map", 
         figure=fig,  # this is where choropleth mapbox figure is inserted
-        style={"width": "100%", "display": "inline-block"}
+        style=frontpage_mapstyle
     )]
 )
         
-
 # current page content
 content = html.Div(id='page-content', style=CONTENT_STYLE)
+#map_container = html.Div(id='map-container', style=frontpage_mapstyle)
 
 # the "current" layout - content changes depending on pathname
-app.layout = html.Div(
-        [dcc.Location(id="url", refresh=False),
-         frontpage_map,
+app.layout = html.Div([
+    dcc.Location(id="url", refresh=False),
+    dcc.Store(id='anumber-memory'),
+    frontpage_map,
      #    sidebar.layout,
-         navbar.layout,
-         content,
+    navbar.layout,
+    content,
 ])
 
 # "complete" layout

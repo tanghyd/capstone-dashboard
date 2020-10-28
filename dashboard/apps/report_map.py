@@ -45,62 +45,51 @@ show_columns = ['anumber','title','report_type','report_year','project',
 
 # specify an html layout for this app's page
 layout = html.Div([
-            html.Div([  #six columns???
-            html.Div([
-                html.H3('Data Table'),
-                dcc.Markdown("""
-                    **Selection Data**
+    html.H3('Data Table'),
+    dcc.Markdown("""
+        **Selection Data**
 
-                    Choose the lasso or rectangle tool in the map's label
-                    bar and then select points in the map.
-                """),
-                # html.Div(id='selected-data'), #style=styles['pre']
-                dash_table.DataTable(
-                    id='selected-table',
-                    style_cell={
-                        'whiteSpace': 'normal',
-                        'height': 'auto',
-                        # 'minWidth': '25px',
-                        # 'width': '150px',
-                        # 'maxWidth': '200px'
-                    },
-                    style_table={'height': '700px', 'overflowY': 'auto', 'width': '1400px'},
-                    #fixed_rows={'headers': True},
-                    #style_table={'height': 800},  # defaults to 500
-                    columns=[{"name": col, "id": col} for col in show_columns],
-                    filter_action="native",
-                    sort_action="native",
-                    sort_mode="multi",
-                    row_selectable="multi",
-                    selected_rows=[],
-                    style_cell_conditional=[
-                        {'if': {'column_id': 'anumber'},
-                        'width': '8%'},
-                        {'if': {'column_id': 'title'},
-                        'width': '25%'},
-                        {'if': {'column_id': 'report_type'},
-                        'width': '8%'},  
-                        {'if': {'column_id': 'report_year'},
-                        'width': '8%'},  
-                         {'if': {'column_id': 'project'},
-                        'width': '8%'},  
-                        {'if': {'column_id': 'commodity'},
-                        'width': '10%'},  
-                        {'if': {'column_id': 'keywords'},
-                        'width': '20%'},  
-                        {'if': {'column_id': 'score'},
-                        'width': '8%'},  
-                        # {'if': {'column_id': 'count'},
-                        # 'width': '5%'}, 
-                        # {'if': {'column_id': 'total'},
-                        # 'width': '2%'}, 
-                        # {'if': {'column_id': 'prop'},
-                        # 'width': '2%'},  
-                        ],
-                ),
-            ],className = "six columns"),
-        ], className = "row"),
-    html.Div(id='datatable-interactivity-container'),
+        Choose the lasso or rectangle tool in the map's label
+        bar and then select points in the map.
+    """),
+    # html.Div(id='selected-data'), #style=styles['pre']
+    dash_table.DataTable(
+        id='selected-table',
+        style_cell={
+            'whiteSpace': 'normal',
+            'height': 'auto',
+            'minWidth': '25px',
+            'width': '140px',
+            'maxWidth': '190px'
+        },
+        style_table={'height': '700px', 'overflowY': 'scroll', 'width': '1200px','overflowX': 'hidden'},
+        #fixed_rows={'headers': True},
+        #style_table={'height': 800},  # defaults to 500
+        columns=[{"name": col, "id": col} for col in show_columns],
+        filter_action="native",
+        sort_action="native",
+        sort_mode="multi",
+        row_selectable="multi",
+        selected_rows=[],
+        style_cell_conditional=[
+            {'if': {'column_id': 'anumber'},
+            'width': '8%'},
+            {'if': {'column_id': 'title'},
+            'width': '25%'},
+            {'if': {'column_id': 'report_type'},
+            'width': '8%'},  
+            {'if': {'column_id': 'report_year'},
+            'width': '8%'},  
+             {'if': {'column_id': 'project'},
+            'width': '8%'},  
+            {'if': {'column_id': 'commodity'},
+            'width': '10%'},  
+            {'if': {'column_id': 'keywords'},
+            'width': '20%'},  
+            {'if': {'column_id': 'score'},
+            'width': '8%'}]
+        ),
+    #html.Div(id='datatable-interactivity-container'),
 ])
 
 @app.callback(
@@ -114,6 +103,78 @@ def display_selected_data(selectedData):
     else:
         return []
 
+# @app.callback(
+#     Output('selected-table', 'data'),
+#     [S('anumber-memory','data')])
+# def on_data_set_table(data):
+#     if data is None:
+#         raise PreventUpdate
+
+#     return data
+
+# @app.callback(
+#     Output('map',)
+# )
+
+# # specify an html layout for this app's page
+# layout = html.Div([
+#             html.Div([  #six columns???
+#             html.Div([
+#                 html.H3('Data Table'),
+#                 dcc.Markdown("""
+#                     **Selection Data**
+
+#                     Choose the lasso or rectangle tool in the map's label
+#                     bar and then select points in the map.
+#                 """),
+#                 # html.Div(id='selected-data'), #style=styles['pre']
+#                 dash_table.DataTable(
+#                     id='selected-table',
+#                     style_cell={
+#                         'whiteSpace': 'normal',
+#                         'height': 'auto',
+#                         # 'minWidth': '25px',
+#                         # 'width': '150px',
+#                         # 'maxWidth': '200px'
+#                     },
+#                     style_table={'height': '700px', 'overflowY': 'auto', 'width': '1400px'},
+#                     #fixed_rows={'headers': True},
+#                     #style_table={'height': 800},  # defaults to 500
+#                     columns=[{"name": col, "id": col} for col in show_columns],
+#                     filter_action="native",
+#                     sort_action="native",
+#                     sort_mode="multi",
+#                     row_selectable="multi",
+#                     selected_rows=[],
+#                     # style_cell_conditional=[
+#                     #     {'if': {'column_id': 'anumber'},
+#                     #     'width': '8%'},
+#                     #     {'if': {'column_id': 'title'},
+#                     #     'width': '25%'},
+#                     #     {'if': {'column_id': 'report_type'},
+#                     #     'width': '8%'},  
+#                     #     {'if': {'column_id': 'report_year'},
+#                     #     'width': '8%'},  
+#                     #      {'if': {'column_id': 'project'},
+#                     #     'width': '8%'},  
+#                     #     {'if': {'column_id': 'commodity'},
+#                     #     'width': '10%'},  
+#                     #     {'if': {'column_id': 'keywords'},
+#                     #     'width': '20%'},  
+#                     #     {'if': {'column_id': 'score'},
+#                     #     'width': '8%'},  
+#                         # {'if': {'column_id': 'count'},
+#                         # 'width': '5%'}, 
+#                         # {'if': {'column_id': 'total'},
+#                         # 'width': '2%'}, 
+#                         # {'if': {'column_id': 'prop'},
+#                         # 'width': '2%'},  
+#                         ],
+#                 ),
+#             ],className = "six columns"),
+#         ], className = "row"),
+#     html.Div(id='datatable-interactivity-container'),
+# ])
 
 # @app.callback(
 #     Output('datatable-interactivity', 'style_data_conditional'),

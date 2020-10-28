@@ -11,10 +11,10 @@ from app import app
 # from app import capstone_files
 
 NAVBAR_STYLE = {
-    'position': 'relative',
+    'position': 'fixed',
     'left': 0,
-    'right': 12,
-   # 'margin-left': '16rem', # left margin starts at 16rem width of sidebar
+    'right': 6,
+    #'margin-left': '64rem', # left margin starts at 16rem width of sidebar
     'padding': '2rem 1rem',
 }
 
@@ -46,8 +46,6 @@ layout = dbc.Navbar(
     style=NAVBAR_STYLE,
     className="mb-5",
 )
-
-
 
 # # this example has a search bar and button instead of navitems / dropdowns
 # layout = dbc.Navbar(
