@@ -2,6 +2,8 @@
 import dash
 import dash_html_components as html
 import dash_core_components as dcc
+import dash_bootstrap_components as dbc
+
 import dash_table
 from dash.dependencies import Input, Output
 
@@ -15,6 +17,7 @@ import json
 
 # import our main dash app variable from the app.py file
 from app import app
+from apps import event_table, event_details
 
 # import data
 from app import map_data, map_geometry, events
@@ -68,16 +71,17 @@ frontpage_map = html.Div([
 
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 
-app.layout = html.Div([
+#app.layout = 
+layout = html.Div([
     dcc.Tabs([
-        dcc.Tab(label='Map Tab', children=[
+        dcc.Tab(label='Map', children=[
             frontpage_map
         ]),
-        dcc.Tab(label='Table Tab', children=[
+        dcc.Tab(label='Reports', children=[
             dash_table.DataTable(
-                    id='selected-table',
+                    id='report-table',
                     style_cell={
                         'whiteSpace': 'normal',
                         'height': 'auto',
@@ -120,23 +124,65 @@ app.layout = html.Div([
                         ],
                 ),
         ]),
-        dcc.Tab(label='Event Details', children=[
-        #?
+        dcc.Tab(label='Events', children=[
+               html.Div(id="event-table")
         ]),
     ])
 ])
 
 @app.callback(
-    Output('selected-table','data'),
+    Output('report-table','data'),
     [Input('map', 'selectedData')])
 def display_selected_data(selectedData):
     if selectedData is not None:
         selectedANumbers = pd.DataFrame({"anumber": [selectedData['points'][i]['location'] for i in range(len(selectedData['points']))]})
-        metadf = map_data.loc[:, ~map_data.columns.isin(hide_columns)] # remove the geometry info to get only the metadata
-        return metadf.merge(selectedANumbers,on="anumber").to_dict("records")
+        report_df = map_data.loc[:, ~map_data.columns.isin(hide_columns)] # remove the geometry info to get only the metadata
+
+        report_df['id'] = report_df['anumber']
+        report_df.set_index('id', inplace=True, drop=False) # need a column that is actually called "id" for the datatable callback to work correctly
+        report_df = report_df.merge(selectedANumbers,on="anumber")
+        report_dict = report_df.to_dict('records')
+        return report_dict
     else:
         return []
 
+@app.callback(
+    Output('event-table','children'),
+    [Input('report-table', 'selected_row_ids')])
+def display_event_details(selectedRows):
+
+    dataframe = events.copy()[['anumber','event_id', 'event_text', 'label']]
+
+    cols = ['anumber','Event ID', 'Event Text', 'Label']
+    dataframe.columns = cols
+
+    if selectedRows is not None:
+        dataframe = dataframe.loc[dataframe['anumber'].isin(selectedRows),:]
+        dataframe.drop('anumber',axis=1)
+
+        rows = []
+        for i in range(len(dataframe)):
+            row = []
+            for col in cols:
+                value = dataframe.iloc[i][col]
+                if col == 'Event ID':
+                    cell = html.Td(html.A(href=f'/event-details?row={i}', children=value, style={'color': 'white'}))
+                else:
+                    cell = html.Td(children=value)
+                row.append(cell)
+            rows.append(html.Tr(row))
+
+        table = [html.Thead(html.Tr([html.Th(col) for col in cols])), html.Tbody(rows)]
+        return dbc.Table(table,
+                        bordered=True,
+                        dark=True,
+                        hover=True,
+                        responsive=True,
+                        striped=True)
+    else:
+        return []
+
+
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(host='0.0.0.0', debug=True, port=8050)
 
