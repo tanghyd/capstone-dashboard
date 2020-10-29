@@ -152,21 +152,27 @@ def display_selected_data(selectedData):
 def display_event_details(selectedRows):
 
     dataframe = events.copy()[['anumber','event_id', 'event_text', 'label']]
+    dataframe['idx'] = dataframe.index
 
-    cols = ['anumber','Event ID', 'Event Text', 'Label']
+    cols = ['anumber','Event ID', 'Event Text', 'Label','idx']
     dataframe.columns = cols
+
+    displaycols = ['Event ID', 'Event Text', 'Label']
 
     if selectedRows is not None:
         dataframe = dataframe.loc[dataframe['anumber'].isin(selectedRows),:]
         dataframe.drop('anumber',axis=1)
 
+        dataframe.set_index('Event ID')
+
         rows = []
         for i in range(len(dataframe)):
             row = []
-            for col in cols:
+            for col in displaycols:
                 value = dataframe.iloc[i][col]
+                idx = dataframe.iloc[i]['idx']
                 if col == 'Event ID':
-                    cell = html.Td(html.A(href=f'/event-details?row={i}', children=value, style={'color': 'white'}))
+                    cell = html.Td(html.A(href=f'/event-details?row={idx}', children=value, style={'color': 'white'}))
                 else:
                     cell = html.Td(children=value)
                 row.append(cell)
