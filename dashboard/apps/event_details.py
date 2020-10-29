@@ -81,5 +81,6 @@ def event_details(search):
 
 
 layout = html.Div([
+    dcc.Link(html.Button('Back'), href='/home'),
     html.Div(id='event-details', style={'margin': '0 auto'})
 ])
