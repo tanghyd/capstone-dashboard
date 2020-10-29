@@ -4,7 +4,7 @@ import dash_html_components as html
 from dash.dependencies import Input, Output
 
 from app import app, server
-from apps import reports, event_table, event_details, report_map, tabapp
+from apps import event_details, tabapp
 from app import map_geometry, map_data
 
 def error(pathname):

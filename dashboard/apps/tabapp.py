@@ -17,7 +17,7 @@ import json
 
 # import our main dash app variable from the app.py file
 from app import app
-from apps import event_table, event_details
+from apps import event_details
 
 # import data
 from app import map_data, map_geometry, events
@@ -80,7 +80,7 @@ layout = html.Div([
                         'maxWidth': '180px'},                    
                     #fixed_rows={'headers': True},
                     #style_table={'height': 800},  # defaults to 500
-                    columns=[{"name": col, "id": col} for col in ['A Number', 'Report Title','Year','Score']], # this should really be a variable
+                    columns=[{"name": col, "id": col} for col in ['id', 'Report Title','Year','Score']], # this should really be a variable
                     filter_action="native",
                     sort_action="native",
                     sort_mode="multi",
