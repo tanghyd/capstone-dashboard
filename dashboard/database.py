@@ -9,7 +9,6 @@ from pipeline.data import report_scores # function to construct report scores
 
 # load data from file
 events = pd.read_csv(os.path.join('data','event_chunks-d2v_v50-c3-e20-results.csv'), index_col=False) #index_col=0
-events['event_text'] = [' '.join(sentences).strip() for sentences in events.event_text.values]
 events['label'] = events['pred'].astype(int)
 #events['prob'] = [np.random.uniform(low=0.5,high=1.0) if label else np.random.uniform(low=0.,high=0.499) for label in events['label']]
 
