@@ -17,11 +17,25 @@ import json
 
 # import our main dash app variable from the app.py file
 from app import app
+<<<<<<< HEAD
 from apps import event_details
+=======
+from apps import event_table, event_details
+>>>>>>> master
 
 # import data
 from app import map_data, map_geometry, events
 
+<<<<<<< HEAD
+=======
+styles = {
+    'pre': {
+        'border': 'thin lightgrey solid',
+        'overflowX': 'scroll'
+    }
+}
+
+>>>>>>> master
 # specify order of data frame to display in table
 hide_columns = ["geometry", 'epoch']  # we dont want to display these 
 show_columns = ['anumber','title','report_type','report_year','project',
