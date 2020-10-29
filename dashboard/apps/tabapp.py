@@ -65,7 +65,11 @@ frontpage_map = html.Div([
 layout = html.Div([
     dcc.Tabs([
         dcc.Tab(label='Map', children=[
-            frontpage_map
+            html.Div(className='two-columns',children=[
+                frontpage_map,
+                dcc.Graph(id="selected-timeline", style={"width": "100%", "display": "inline-block",'vertical-align': 'middle'})
+            ]
+            )
         ]),
         dcc.Tab(label='Reports', children=[
             dash_table.DataTable(
@@ -96,6 +100,7 @@ layout = html.Div([
 
 @app.callback(
     Output('report-table','data'),
+    Output('selected-timeline', 'figure'),
     [Input('map', 'selectedData')])
 def display_selected_data(selectedData):
     if selectedData is not None:
@@ -110,10 +115,14 @@ def display_selected_data(selectedData):
         cols = ['id', 'Report Title','Year','Score']
         report_df.columns = cols
 
+        report_dates = map_data.loc[:, ['anumber','report_year','date_from','date_to']]
+        events_timeline_df = events.merge(selectedANumbers,on="anumber")	       
+        events_timeline_df = events_timeline_df.merge(report_dates,on="anumber")
+
         report_dict = report_df.to_dict('records')
-        return report_dict
+        return report_dict, px.timeline(events_timeline_df, x_start="date_from", x_end="date_to", y="anumber", color="label")
     else:
-        return []
+        return [], {} # return nothing
 
 @app.callback(
     Output('event-table','children'),
