@@ -17,14 +17,15 @@ def error(pathname):
     )
 
 # the styles for the main content position it to the right of the side bar and add some padding
-CONTENT_STYLE = {
-    'margin-left': '40rem',  #18rem with sidebar!
-    'margin-right': '2rem',
-    'padding': '8rem 1rem',
-}
+#CONTENT_STYLE = {
+#    'margin-left': '40rem',  #18rem with sidebar!
+#    'margin-right': '2rem',
+#   'padding': '8rem 1rem',
+#}
 
 # current page content
-content = html.Div(id='page-content', style=CONTENT_STYLE)
+content = html.Div(id='page-content', #style=CONTENT_STYLE
+)
 #map_container = html.Div(id='map-container', style=frontpage_mapstyle)
 
 # the "current" layout - content changes depending on pathname

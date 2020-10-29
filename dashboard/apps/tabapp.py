@@ -22,13 +22,6 @@ from apps import event_table, event_details
 # import data
 from app import map_data, map_geometry, events
 
-styles = {
-    'pre': {
-        'border': 'thin lightgrey solid',
-        'overflowX': 'scroll'
-    }
-}
-
 # specify order of data frame to display in table
 hide_columns = ["geometry", 'epoch']  # we dont want to display these 
 show_columns = ['anumber','title','report_type','report_year','project',
@@ -69,11 +62,6 @@ frontpage_map = html.Div([
     )]
 )
 
-external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
-#app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-#app.layout = 
 layout = html.Div([
     dcc.Tabs([
         dcc.Tab(label='Map', children=[
@@ -82,46 +70,22 @@ layout = html.Div([
         dcc.Tab(label='Reports', children=[
             dash_table.DataTable(
                     id='report-table',
-                    style_cell={
+                    style_cell={'textAlign': 'left',
+                    'backgroundColor': 'rgb(50, 50, 50)',
+                        'color': 'white',
                         'whiteSpace': 'normal',
                         'height': 'auto',
-                        # 'minWidth': '25px',
-                        # 'width': '150px',
-                        # 'maxWidth': '200px'
-                    },
-                    style_table={'height': '700px', 'overflowY': 'auto', 'width': '1400px'},
+                        'minWidth': '180px',
+                        'width': '180px',
+                        'maxWidth': '180px'},                    
                     #fixed_rows={'headers': True},
                     #style_table={'height': 800},  # defaults to 500
-                    columns=[{"name": col, "id": col} for col in show_columns],
+                    columns=[{"name": col, "id": col} for col in ['A Number', 'Report Title','Year','Score']], # this should really be a variable
                     filter_action="native",
                     sort_action="native",
                     sort_mode="multi",
                     row_selectable="multi",
                     selected_rows=[],
-                    style_cell_conditional=[
-                        {'if': {'column_id': 'anumber'},
-                        'width': '8%'},
-                        {'if': {'column_id': 'title'},
-                        'width': '25%'},
-                        {'if': {'column_id': 'report_type'},
-                        'width': '8%'},  
-                        {'if': {'column_id': 'report_year'},
-                        'width': '8%'},  
-                         {'if': {'column_id': 'project'},
-                        'width': '8%'},  
-                        {'if': {'column_id': 'commodity'},
-                        'width': '10%'},  
-                        {'if': {'column_id': 'keywords'},
-                        'width': '20%'},  
-                        {'if': {'column_id': 'score'},
-                        'width': '8%'},  
-                        # {'if': {'column_id': 'count'},
-                        # 'width': '5%'}, 
-                        # {'if': {'column_id': 'total'},
-                        # 'width': '2%'}, 
-                        # {'if': {'column_id': 'prop'},
-                        # 'width': '2%'},  
-                        ],
                 ),
         ]),
         dcc.Tab(label='Events', children=[
@@ -141,6 +105,11 @@ def display_selected_data(selectedData):
         report_df['id'] = report_df['anumber']
         report_df.set_index('id', inplace=True, drop=False) # need a column that is actually called "id" for the datatable callback to work correctly
         report_df = report_df.merge(selectedANumbers,on="anumber")
+
+        report_df = report_df.sort_values('score',axis=0,ascending=False)[['id', 'title','report_year', 'score']]
+        cols = ['id', 'Report Title','Year','Score']
+        report_df.columns = cols
+
         report_dict = report_df.to_dict('records')
         return report_dict
     else:
@@ -163,14 +132,14 @@ def display_event_details(selectedRows):
         dataframe = dataframe.loc[dataframe['anumber'].isin(selectedRows),:]
         dataframe.drop('anumber',axis=1)
 
-        dataframe.set_index('Event ID')
+        #dataframe.set_index('Event ID')
 
         rows = []
         for i in range(len(dataframe)):
             row = []
+            idx = dataframe.iloc[i]['idx']
             for col in displaycols:
                 value = dataframe.iloc[i][col]
-                idx = dataframe.iloc[i]['idx']
                 if col == 'Event ID':
                     cell = html.Td(html.A(href=f'/event-details?row={idx}', children=value, style={'color': 'white'}))
                 else:
@@ -178,7 +147,7 @@ def display_event_details(selectedRows):
                 row.append(cell)
             rows.append(html.Tr(row))
 
-        table = [html.Thead(html.Tr([html.Th(col) for col in cols])), html.Tbody(rows)]
+        table = [html.Thead(html.Tr([html.Th(col) for col in displaycols])), html.Tbody(rows)]
         return dbc.Table(table,
                         bordered=True,
                         dark=True,
